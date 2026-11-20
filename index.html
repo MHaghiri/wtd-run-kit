@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WTD Run Kit — water table depth model packages</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>WTD Run Kit</h1>
+    <p>Pick a region, pick a groundwater model, and download a ready-to-run package that computes <strong>water table depth (WTD)</strong> on your own machine.</p>
+  </header>
+
+  <main>
+    <section class="panel" id="step-region">
+      <h2><span class="num">1</span> Choose a region</h2>
+      <p class="hint">Draw a rectangle on the map (square tool, top-left), or type the bounds.</p>
+      <div id="map"></div>
+      <div class="bbox">
+        <label>South <input type="number" step="0.0001" id="south" value="39.0"></label>
+        <label>North <input type="number" step="0.0001" id="north" value="39.4"></label>
+        <label>West <input type="number" step="0.0001" id="west" value="-105.5"></label>
+        <label>East <input type="number" step="0.0001" id="east" value="-105.0"></label>
+      </div>
+      <label class="full">Project name <input type="text" id="runname" value="my_wtd_run"></label>
+      <p id="area-info" class="info"></p>
+    </section>
+
+    <section class="panel" id="step-model">
+      <h2><span class="num">2</span> Choose a model</h2>
+      <div class="models">
+        <label class="model">
+          <input type="radio" name="model" value="parflow" checked>
+          <div>
+            <h3>ParFlow (CONUS2 subset)</h3>
+            <p>Integrated surface–subsurface model. Inputs are cut from the national ParFlow-CONUS2 model using HydroFrame <code>subsettools</code>. Also includes a quick script that downloads existing simulated WTD. <em>US only. Needs a free HydroFrame account.</em></p>
+          </div>
+        </label>
+        <label class="model">
+          <input type="radio" name="model" value="modflow">
+          <div>
+            <h3>MODFLOW 6 (FloPy)</h3>
+            <p>Steady-state unconfined groundwater model built from a DEM, with drains at land surface so the water table finds its own level. Works anywhere (US DEM is downloaded automatically, elsewhere you supply a DEM).</p>
+          </div>
+        </label>
+        <label class="model">
+          <input type="radio" name="model" value="global">
+          <div>
+            <h3>Global WTD map (Fan et al. 2013)</h3>
+            <p>No simulation: clips the published ~1 km global equilibrium WTD map to your region and plots it. Fast baseline for comparison.</p>
+          </div>
+        </label>
+      </div>
+
+      <div class="opts" data-for="parflow">
+        <label>Start date <input type="date" id="pf-start" value="2003-10-01"></label>
+        <label>End date <input type="date" id="pf-end" value="2003-10-03"></label>
+        <label>Processors P × Q
+          <span class="pq"><input type="number" id="pf-p" value="1" min="1"> × <input type="number" id="pf-q" value="1" min="1"></span>
+        </label>
+      </div>
+      <div class="opts" data-for="modflow" hidden>
+        <label>Cell size (m) <input type="number" id="mf-cell" value="250" min="30"></label>
+        <label>Hydraulic conductivity K (m/day) <input type="number" id="mf-k" value="1" step="any"></label>
+        <label>Recharge (mm/yr) <input type="number" id="mf-rch" value="100" step="any"></label>
+        <label>Aquifer thickness (m) <input type="number" id="mf-thk" value="100" step="any"></label>
+      </div>
+      <div class="opts" data-for="global" hidden>
+        <p class="hint">You'll download the continent file once (link in the package README); the script clips it to your box.</p>
+      </div>
+      <p id="size-info" class="info"></p>
+    </section>
+
+    <section class="panel" id="step-download">
+      <h2><span class="num">3</span> Download the package</h2>
+      <p class="hint">You get a zip with an environment file, run scripts, a plotting script and a README with step-by-step instructions.</p>
+      <button id="download">Download run kit (.zip)</button>
+      <details>
+        <summary>Preview files in the package</summary>
+        <ul id="file-list"></ul>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>Open source. Model credits: <a href="https://parflow.org">ParFlow</a>, <a href="https://hydroframe.org">HydroFrame</a>, <a href="https://www.usgs.gov/mission-areas/water-resources/science/modflow-and-related-programs">USGS MODFLOW</a> / <a href="https://github.com/modflowpy/flopy">FloPy</a>, Fan, Li &amp; Miguez-Macho (2013, <em>Science</em>). Packages are starting points: check parameters for your study before using results.</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
