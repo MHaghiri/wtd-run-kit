@@ -3,96 +3,214 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WTD Run Kit — water table depth model packages</title>
+  <title>WTD Run Kit · Water table depth from 11 models, for any region</title>
+  <meta name="description" content="Pick a region and a groundwater model (ParFlow, GLOBGM, G³M, WTM, Fan et al., CLM, WBM, VIC-WUR, MODFLOW and more) and download a ready-to-run package that computes and maps water table depth.">
+  <meta property="og:title" content="WTD Run Kit">
+  <meta property="og:description" content="Water table depth from 11 models, for any region: ready-to-run packages.">
+  <meta property="og:image" content="assets/example-wtd-map.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C16 3 6 15 6 21a10 10 0 0 0 20 0C26 15 16 3 16 3z' fill='%232a9d8f'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <h1>WTD Run Kit</h1>
-    <p>Pick a region, pick a groundwater model, and download a ready-to-run package that computes <strong>water table depth (WTD)</strong> on your own machine.</p>
+  <nav class="topnav">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C16 3 6 15 6 21a10 10 0 0 0 20 0C26 15 16 3 16 3z" fill="#2a9d8f"/><path d="M9 22c3 2 11 2 14 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="3 2"/></svg>
+      WTD Run Kit
+    </a>
+    <div class="links">
+      <a href="#models">Models</a>
+      <a href="#compare">Compare</a>
+      <a href="#build">Build a kit</a>
+      <a href="#gallery">Gallery</a>
+      <a href="https://github.com/MHaghiri/wtd-run-kit" class="gh">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">Open toolkit for groundwater modellers</p>
+        <h1>Water table depth,<br><span>from any model, for any region.</span></h1>
+        <p class="lead">Draw a box on the map and choose one of <strong>11 groundwater and land-surface models</strong>. You get a ready-to-run package with the code, environment, data links and plotting scripts to compute and map water table depth (WTD).</p>
+        <div class="cta">
+          <a href="#build" class="btn primary">Build a run kit →</a>
+          <a href="#models" class="btn ghost">Browse models</a>
+        </div>
+        <ul class="stats">
+          <li><b id="stat-models">11</b><span>models</span></li>
+          <li><b>4</b><span>coverages</span></li>
+          <li><b>0</b><span>servers needed</span></li>
+        </ul>
+      </div>
+      <figure class="hero-fig">
+        <img src="assets/wtd-concept.svg" alt="Cross-section showing land surface, unsaturated zone, dashed water table and arrows marking water table depth">
+        <figcaption><b>Figure 1.</b> Water table depth (WTD) is the vertical distance from the land surface down to the water table. It is deep under hills and close to zero at rivers and wetlands, where groundwater discharges.</figcaption>
+      </figure>
+    </div>
   </header>
 
   <main>
-    <section class="panel" id="step-region">
-      <h2><span class="num">1</span> Choose a region</h2>
-      <p class="hint">Draw a rectangle on the map (square tool, top-left), or type the bounds.</p>
-      <div id="map"></div>
-      <div class="bbox">
-        <label>South <input type="number" step="0.0001" id="south" value="39.0"></label>
-        <label>North <input type="number" step="0.0001" id="north" value="39.4"></label>
-        <label>West <input type="number" step="0.0001" id="west" value="-105.5"></label>
-        <label>East <input type="number" step="0.0001" id="east" value="-105.0"></label>
-      </div>
-      <label class="full">Project name <input type="text" id="runname" value="my_wtd_run"></label>
-      <p id="area-info" class="info"></p>
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="how">
+      <div class="step"><span>1</span><h3>Choose a region</h3><p>Draw a rectangle anywhere on Earth or type its bounds. The site checks whether your model covers it.</p></div>
+      <div class="step"><span>2</span><h3>Pick a model</h3><p>From national ParFlow-CONUS and 1 km GLOBGM to New Zealand's 250 m map, or a quick MODFLOW 6 model.</p></div>
+      <div class="step"><span>3</span><h3>Download &amp; run</h3><p>The zip holds scripts, <code>environment.yml</code>, data links and a README. Plot and compare models in one command.</p></div>
     </section>
 
-    <section class="panel" id="step-model">
-      <h2><span class="num">2</span> Choose a model</h2>
-      <div class="models">
-        <label class="model">
-          <input type="radio" name="model" value="parflow" checked>
-          <div>
-            <h3>ParFlow (CONUS2 subset)</h3>
-            <p>Integrated surface–subsurface model. Inputs are cut from the national ParFlow-CONUS2 model using HydroFrame <code>subsettools</code>. Also includes a quick script that downloads existing simulated WTD. <em>US only. Needs a free HydroFrame account.</em></p>
-          </div>
-        </label>
-        <label class="model">
-          <input type="radio" name="model" value="modflow">
-          <div>
-            <h3>MODFLOW 6 (FloPy)</h3>
-            <p>Steady-state unconfined groundwater model built from a DEM, with drains at land surface so the water table finds its own level. Works anywhere (US DEM is downloaded automatically, elsewhere you supply a DEM).</p>
-          </div>
-        </label>
-        <label class="model">
-          <input type="radio" name="model" value="global">
-          <div>
-            <h3>Global WTD map (Fan et al. 2013)</h3>
-            <p>No simulation: clips the published ~1 km global equilibrium WTD map to your region and plots it. Fast baseline for comparison.</p>
-          </div>
-        </label>
+    <!-- ============ MODELS ============ -->
+    <section id="models" class="block">
+      <div class="block-head">
+        <h2>Model catalog</h2>
+        <p>Each card says what the model is, where it works, and what its kit can do: <span class="tag run">Run model</span> sets up or runs the model; <span class="tag data">Get results</span> clips WTD the authors already published.</p>
       </div>
-
-      <div class="opts" data-for="parflow">
-        <label>Start date <input type="date" id="pf-start" value="2003-10-01"></label>
-        <label>End date <input type="date" id="pf-end" value="2003-10-03"></label>
-        <label>Processors P × Q
-          <span class="pq"><input type="number" id="pf-p" value="1" min="1"> × <input type="number" id="pf-q" value="1" min="1"></span>
-        </label>
+      <div class="filters" role="toolbar" aria-label="Filter models">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="Global">Global</button>
+        <button class="chip" data-filter="Continental">Continental</button>
+        <button class="chip" data-filter="Regional">Regional / any</button>
+        <button class="chip" data-filter="data">Has published WTD</button>
+        <button class="chip" data-filter="run">Can run model</button>
       </div>
-      <div class="opts" data-for="modflow" hidden>
-        <label>Cell size (m) <input type="number" id="mf-cell" value="250" min="30"></label>
-        <label>Hydraulic conductivity K (m/day) <input type="number" id="mf-k" value="1" step="any"></label>
-        <label>Recharge (mm/yr) <input type="number" id="mf-rch" value="100" step="any"></label>
-        <label>Aquifer thickness (m) <input type="number" id="mf-thk" value="100" step="any"></label>
-      </div>
-      <div class="opts" data-for="global" hidden>
-        <p class="hint">You'll download the continent file once (link in the package README); the script clips it to your box.</p>
-      </div>
-      <p id="size-info" class="info"></p>
+      <div id="model-grid" class="grid"></div>
     </section>
 
-    <section class="panel" id="step-download">
-      <h2><span class="num">3</span> Download the package</h2>
-      <p class="hint">You get a zip with an environment file, run scripts, a plotting script and a README with step-by-step instructions.</p>
-      <button id="download">Download run kit (.zip)</button>
-      <details>
-        <summary>Preview files in the package</summary>
-        <ul id="file-list"></ul>
-      </details>
+    <!-- ============ COMPARE ============ -->
+    <section id="compare" class="block alt">
+      <div class="block-head">
+        <h2>Compare at a glance</h2>
+        <p>Grid resolution against coverage for models with a fixed published grid. Smaller is finer. Hover over a dot for details.</p>
+      </div>
+      <figure class="chart-fig">
+        <div id="res-chart"></div>
+        <figcaption><b>Figure 2.</b> Approximate grid size of each model's published WTD product (log scale). WTM, CLM, WBM, VIC-WUR and MODFLOW 6 run on a grid you choose, so they are not plotted.</figcaption>
+      </figure>
+      <div class="table-wrap">
+        <table id="model-table">
+          <thead><tr><th data-k="short">Model</th><th data-k="scale">Scale</th><th data-k="resolution">Resolution</th><th data-k="authors">Reference</th><th>WTD</th><th>Code</th><th>Data</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ BUILD ============ -->
+    <section id="build" class="block">
+      <div class="block-head">
+        <h2>Build your run kit</h2>
+        <p>Your settings go into <code>config.json</code> inside the zip, so you can change them later.</p>
+      </div>
+      <div class="builder">
+        <div class="card map-card">
+          <div class="card-title"><span class="num">1</span> Region</div>
+          <div id="map"></div>
+          <p class="hint">Use the ■ tool (top left) to draw a box. The shaded area shows the selected model's coverage.</p>
+          <div class="bbox">
+            <label>South<input type="number" step="0.0001" id="south" value="39.0"></label>
+            <label>North<input type="number" step="0.0001" id="north" value="39.4"></label>
+            <label>West<input type="number" step="0.0001" id="west" value="-105.5"></label>
+            <label>East<input type="number" step="0.0001" id="east" value="-105.0"></label>
+          </div>
+          <div class="presets">
+            <span>Try:</span>
+            <button data-box="39.0,39.4,-105.5,-105.0">Colorado Front Range</button>
+            <button data-box="41.6,42.2,-88.3,-87.5">Chicago area</button>
+            <button data-box="-43.8,-43.3,171.8,172.6">Canterbury, NZ</button>
+            <button data-box="51.8,52.4,4.6,5.4">Netherlands</button>
+          </div>
+          <p id="area-info" class="info"></p>
+        </div>
+
+        <div class="card side-card">
+          <div class="card-title"><span class="num">2</span> Model</div>
+          <select id="model-select" aria-label="Model"></select>
+          <div id="model-summary" class="summary"></div>
+
+          <div class="opts" data-for="parflow" hidden>
+            <label>National grid
+              <select id="pf-grid"><option value="conus2">CONUS2 (Yang et al., 2023)</option><option value="conus1">CONUS1 (Maxwell et al., 2015)</option></select>
+            </label>
+            <label>Start date<input type="date" id="pf-start" value="2003-10-01"></label>
+            <label>End date<input type="date" id="pf-end" value="2003-10-03"></label>
+            <label>Processors P × Q<span class="pq"><input type="number" id="pf-p" value="1" min="1"> × <input type="number" id="pf-q" value="1" min="1"></span></label>
+          </div>
+          <div class="opts" data-for="modflow" hidden>
+            <label>Cell size (m)<input type="number" id="mf-cell" value="250" min="30"></label>
+            <label>K (m/day)<input type="number" id="mf-k" value="1" step="any"></label>
+            <label>Recharge (mm/yr)<input type="number" id="mf-rch" value="100" step="any"></label>
+            <label>Aquifer thickness (m)<input type="number" id="mf-thk" value="100" step="any"></label>
+          </div>
+          <label class="full">Project name<input type="text" id="runname" value="my_wtd_run"></label>
+          <p id="size-info" class="info"></p>
+
+          <div class="card-title"><span class="num">3</span> Download</div>
+          <button id="download" class="btn primary wide">Download run kit (.zip)</button>
+          <p id="dl-msg" class="info small"></p>
+        </div>
+      </div>
+
+      <div class="card preview">
+        <div class="preview-head"><b>Inside the package</b><span class="small">Click a file to preview it</span></div>
+        <div class="preview-body">
+          <ul id="file-list"></ul>
+          <pre id="file-view"><code>Select a file…</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section id="gallery" class="block alt">
+      <div class="block-head">
+        <h2>What you get</h2>
+        <p>Real outputs of the kit's scripts. These come from the MODFLOW 6 kit run on synthetic test terrain, so they show the format, not results for a real place.</p>
+      </div>
+      <div class="gallery">
+        <figure>
+          <img src="assets/example-wtd-map.png" alt="Map of water table depth with shallow blue valleys and deep brown uplands, plus a histogram of depths" loading="lazy">
+          <figcaption><b>Figure 3.</b> <code>plot_wtd.py</code> output: WTD map on a log scale (blue = shallow, brown = deep) and a histogram with the share of area in each depth class. The water table reaches the surface along valley floors.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/example-compare.png" alt="Four-panel comparison: two WTD maps, their difference and a scatter plot" loading="lazy">
+          <figcaption><b>Figure 4.</b> <code>compare_wtd.py</code> output for two runs with hydraulic conductivity K = 1 and K = 5 m/day. Higher K drains the uplands and deepens the water table (red), while valleys stay wet. The panels show maps, the difference, and a log-log scatter with r and bias.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ RUN ============ -->
+    <section class="block">
+      <div class="block-head"><h2>Running a kit</h2><p>The same three commands for every model. Each kit's README adds model-specific steps.</p></div>
+      <div class="cmds">
+        <div><h4>Set up</h4><pre><code>conda env create -f environment.yml
+conda activate wtd-&lt;model&gt;</code></pre></div>
+        <div><h4>Get WTD</h4><pre><code># published results → your box
+python clip_wtd.py --file &lt;product&gt;
+# or run the model (see README)</code></pre></div>
+        <div><h4>Plot &amp; compare</h4><pre><code>python plot_wtd.py outputs/wtd_X.tif
+python compare_wtd.py A.tif B.tif</code></pre></div>
+      </div>
     </section>
   </main>
 
   <footer>
-    <p>Open source. Model credits: <a href="https://parflow.org">ParFlow</a>, <a href="https://hydroframe.org">HydroFrame</a>, <a href="https://www.usgs.gov/mission-areas/water-resources/science/modflow-and-related-programs">USGS MODFLOW</a> / <a href="https://github.com/modflowpy/flopy">FloPy</a>, Fan, Li &amp; Miguez-Macho (2013, <em>Science</em>). Packages are starting points: check parameters for your study before using results.</p>
+    <div class="foot-inner">
+      <div>
+        <b>WTD Run Kit</b> · open source (MIT) · <a href="https://github.com/MHaghiri/wtd-run-kit">github.com/MHaghiri/wtd-run-kit</a>
+        <p>Kits are starting points. Check parameters, units (depth vs. elevation) and data licences, and cite the original model papers listed in each kit.</p>
+      </div>
+      <div class="small">Map © OpenStreetMap contributors · Built with Leaflet and JSZip</div>
+    </div>
   </footer>
+
+  <div id="tooltip" role="tooltip"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="js/templates.js"></script>
+  <script src="js/models.js"></script>
+  <script src="js/kits.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

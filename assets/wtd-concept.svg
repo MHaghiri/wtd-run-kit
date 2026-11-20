@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" role="img" aria-labelledby="t d" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif">
+  <title id="t">What is water table depth?</title>
+  <desc id="d">Cross-section of a hillslope: land surface on top, an unsaturated zone below it, and the water table, which follows the topography in a subdued way. Water table depth is the vertical distance from the land surface down to the water table. It is deep under hills and shallow or zero near rivers and lakes.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f4f8"/><stop offset="1" stop-color="#f7fbfc"/></linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9d8b4"/><stop offset="1" stop-color="#d9c08f"/></linearGradient>
+    <linearGradient id="gw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4aa3c8"/><stop offset="1" stop-color="#14537a"/></linearGradient>
+    <pattern id="grain" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r="1.1" fill="#b99a62" opacity=".45"/><circle cx="10" cy="10" r=".9" fill="#b99a62" opacity=".35"/></pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0b2e4a"/></marker>
+    <marker id="arrw" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffffff"/></marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2a7fb0"/></marker>
+  </defs>
+  <rect width="900" height="380" fill="url(#sky)"/>
+  <!-- soil body (land surface) -->
+  <path d="M0 120 C120 60 220 60 300 130 C350 175 390 200 430 205 C470 210 500 200 540 160 C600 100 700 70 780 110 C830 135 870 150 900 150 L900 380 L0 380Z" fill="url(#soil)"/>
+  <path d="M0 120 C120 60 220 60 300 130 C350 175 390 200 430 205 C470 210 500 200 540 160 C600 100 700 70 780 110 C830 135 870 150 900 150 L900 380 L0 380Z" fill="url(#grain)"/>
+  <!-- saturated zone -->
+  <path d="M0 225 C120 190 230 190 320 200 C370 205 400 207 430 207 C465 207 500 205 560 195 C650 180 760 175 840 185 L900 190 L900 380 L0 380Z" fill="url(#gw)" opacity=".92"/>
+  <!-- river -->
+  <path d="M398 202 C415 210 445 211 462 203 L462 208 C445 216 415 216 398 208Z" fill="#1d6fa3"/>
+  <!-- land surface line + water table line -->
+  <path d="M0 120 C120 60 220 60 300 130 C350 175 390 200 430 205 C470 210 500 200 540 160 C600 100 700 70 780 110 C830 135 870 150 900 150" fill="none" stroke="#5a4a2a" stroke-width="3"/>
+  <path d="M0 225 C120 190 230 190 320 200 C370 205 400 207 430 207 C465 207 500 205 560 195 C650 180 760 175 840 185 L900 190" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="9 6"/>
+  <!-- trees -->
+  <g fill="#3f7d4e"><circle cx="190" cy="66" r="13"/><rect x="188" y="74" width="4" height="12" fill="#6b4f2a"/><circle cx="700" cy="76" r="12"/><rect x="698" y="83" width="4" height="11" fill="#6b4f2a"/><circle cx="725" cy="81" r="9"/></g>
+  <!-- recharge arrows -->
+  <g stroke="#2a7fb0" stroke-width="2.2" marker-end="url(#arrb)" fill="none" opacity=".85">
+    <path d="M110 40 v40"/><path d="M150 30 v38"/><path d="M640 50 v40"/><path d="M680 40 v34"/>
+  </g>
+  <text x="95" y="28" font-size="13" fill="#2a7fb0" font-weight="600">Recharge</text>
+  <!-- flow arrows in aquifer -->
+  <g stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrw)" opacity=".9">
+    <path d="M150 285 C230 295 300 280 350 255"/><path d="M760 285 C680 295 580 280 515 255"/>
+  </g>
+  <!-- WTD arrows -->
+  <g stroke="#0b2e4a" stroke-width="2.2" marker-start="url(#arr)" marker-end="url(#arr)">
+    <line x1="200" y1="82" x2="200" y2="188"/>
+    <line x1="650" y1="96" x2="650" y2="181"/>
+  </g>
+  <rect x="208" y="118" width="128" height="40" rx="8" fill="#0b2e4a"/>
+  <text x="272" y="136" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">WTD</text>
+  <text x="272" y="151" font-size="11" fill="#cfe6f2" text-anchor="middle">deep under hills</text>
+  <rect x="658" y="120" width="128" height="40" rx="8" fill="#0b2e4a"/>
+  <text x="722" y="138" font-size="13" fill="#fff" text-anchor="middle" font-weight="700">WTD</text>
+  <text x="722" y="153" font-size="11" fill="#cfe6f2" text-anchor="middle">land − water table</text>
+  <!-- labels -->
+  <text x="430" y="240" font-size="12" fill="#ffffff" text-anchor="middle" font-weight="600">WTD ≈ 0 at rivers &amp; wetlands</text>
+  <path d="M430 228 L430 214" stroke="#fff" stroke-width="1.5"/>
+  <text x="345" y="128" font-size="12.5" fill="#5a4a2a" font-weight="700">Land surface</text>
+  <text x="18" y="168" font-size="12" fill="#7a6438">Unsaturated zone</text>
+  <text x="18" y="250" font-size="12.5" fill="#ffffff" font-weight="700">Water table (dashed)</text>
+  <text x="18" y="330" font-size="13" fill="#e6f3fa" font-weight="600">Saturated zone · groundwater</text>
+  <text x="882" y="330" font-size="11" fill="#cfe6f2" text-anchor="end">groundwater flows from hills toward valleys</text>
+</svg>

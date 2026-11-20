@@ -1,48 +1,106 @@
-# WTD Run Kit
+<div align="center">
 
-A small website that generates **ready-to-run packages for computing water table depth (WTD)**.
+# 💧 WTD Run Kit
 
-1. Draw a region on the map
-2. Choose a model: **ParFlow (CONUS2 subset)**, **MODFLOW 6 (FloPy)**, or the **Fan et al. (2013) global WTD map**
-3. Download a zip with the environment file, run scripts, plotting script and step-by-step README
+### Water table depth from any model, for any region
 
-Everything happens in the browser. There's no server, so the site runs free on GitHub Pages. Users run the models on their own computer or cluster.
+**[Open the website →](https://mhaghiri.github.io/wtd-run-kit/)**
 
-## Models in the packages
+Draw a box on a map and pick one of **11 groundwater and land-surface models**. You get a ready-to-run package with code, environment, data links and plotting scripts that computes and maps **water table depth (WTD)** on your own machine.
 
-| Model | Where | What the package does |
-|---|---|---|
-| ParFlow-CLM (CONUS2) | Contiguous US | Quick download of existing ParFlow-CONUS2 simulated WTD (`hf_hydrodata`), plus a full subset-and-run workflow with HydroFrame `subsettools`, plus WTD post-processing |
-| MODFLOW 6 | Anywhere | Builds a steady-state unconfined model from a DEM (auto-downloaded in the US from USGS 3DEP) with drains at land surface; outputs a WTD GeoTIFF |
-| Fan et al. 2013 | Global | Clips the published ~1 km equilibrium WTD map to the region |
+[![Website](https://img.shields.io/badge/website-live-2a9d8f)](https://mhaghiri.github.io/wtd-run-kit/)
+![Models](https://img.shields.io/badge/models-11-0b2e4a)
+![License](https://img.shields.io/badge/license-MIT-e9c46a)
+![No server](https://img.shields.io/badge/server-none%20needed-457b9d)
 
-## Publish on GitHub Pages
+<img src="assets/screenshot.png" alt="Screenshot of the WTD Run Kit website" width="820">
 
-1. Create a new repository on GitHub (e.g. `wtd-run-kit`) and upload the contents of this folder (or `git push` it).
-2. In the repository, go to **Settings → Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**, branch `main`, folder `/ (root)`, then **Save**.
-4. After a minute your site is live at `https://<your-username>.github.io/wtd-run-kit/`.
+</div>
 
-To run it locally, run `python -m http.server` in this folder and open http://localhost:8000.
+---
 
-## Project layout
+## What is water table depth?
+
+<img src="assets/wtd-concept.svg" alt="Cross-section diagram of land surface, unsaturated zone and water table" width="100%">
+
+*Figure 1. Water table depth (WTD) is the vertical distance from the land surface down to the water table. It is deep under hills and near zero at rivers and wetlands, where groundwater discharges.*
+
+## Models
+
+| | Model | Scale | Resolution | Kit can… | Reference |
+|---|---|---|---|---|---|
+| 🟦 | **ParFlow-CLM** (CONUS1 / CONUS2) | Contiguous US | 1 km | run model · get results | Maxwell et al. 2015; Yang et al. 2023 |
+| 🟪 | **WTM**, Water Table Model | North America | configurable | run model · get results | Callaghan et al. 2025, *GMD* |
+| 🟧 | **Equilibrium Water Table** | Global | ~1 km | get results | Fan et al. 2013, *Science*; 2017, *PNAS* |
+| 🟩 | **G³M** | Global | 5′ (~9 km) | run model · get results | Reinecke et al. 2019, *GMD* |
+| 🟥 | **PCR-GLOBWB–MODFLOW** | Global | 5′ (~9 km) | run model · get results | de Graaf et al. 2015, 2017 |
+| ⬛ | **GLOBGM v1.0** | Global | 30″ (~1 km) | run model · get results | Verkaik et al. 2024, *GMD* |
+| 🟩 | **CLM** + lateral groundwater flow | Global | land-model grid | run model | Zeng et al. 2018, *JAMES* |
+| 🟦 | **WBM**, Water Balance Model | Global | configurable | run model | Grogan et al. 2022, *GMD* |
+| 🟫 | **VIC-WUR** (MODFLOW-coupled) | Global | configurable | run model | Droppers et al. 2020, *GMD* |
+| 🟥 | **National Water Table, NZ** | New Zealand | 250 m | get results | Westerhoff et al. 2018, *HESS* |
+| 🔵 | **MODFLOW 6 quick model** | Anywhere | you choose | run model | USGS MODFLOW 6 + FloPy |
+
+**Run model** means the kit sets up or runs the model for your region. **Get results** means it clips WTD that the authors already published to your region.
+
+## What's in a kit
 
 ```
-index.html          page layout
-css/style.css       styling
-js/app.js           map, form, size estimate, zip download
-js/templates.js     the package contents for each model (edit here to change scripts)
+my_wtd_run/
+├── README.md          step-by-step guide for this model + region, with citation
+├── config.json        your bounding box and settings
+├── environment.yml    conda environment
+├── clip_wtd.py        clip any WTD GeoTIFF / NetCDF (any projection) to your box
+├── plot_wtd.py        WTD map + depth histogram
+├── compare_wtd.py     compare two models: difference map, scatter, bias / RMSE / r
+└── …                  model-specific scripts (ParFlow subsettools workflow, MODFLOW 6 builder, Fan downloader, DEM prep)
 ```
 
-### Adding another model
-Add a new radio option in `index.html`, then add a new branch in `build()` in `js/templates.js` that returns `{ "filename": "contents" }`. Scripts should read `config.json` for the region and settings.
+## Example outputs
 
-## Status
-- MODFLOW and global-map packages were tested end to end, with a synthetic DEM and a sample NetCDF file.
-- The ParFlow package follows the HydroFrame subsettools 2.x workflow. Testing it needs a HydroFrame account and a ParFlow install, so check it against the [official examples](https://github.com/hydroframe/subsettools) if the APIs change.
+| `plot_wtd.py` | `compare_wtd.py` |
+|---|---|
+| <img src="assets/example-wtd-map.png" width="100%"> | <img src="assets/example-compare.png" width="100%"> |
+| *Figure 2. WTD map (blue = shallow, brown = deep) with depth-class histogram.* | *Figure 3. Two MODFLOW runs (K = 1 vs 5 m/day): maps, difference, scatter.* |
 
-## Credits
-ParFlow · HydroFrame (subsettools, hf_hydrodata, ParFlow-CONUS2) · USGS MODFLOW 6 & FloPy · HyRiver py3dep · Fan, Li & Miguez-Macho (2013), *Science* 339:940–943.
+<sub>Both figures come from the MODFLOW 6 kit run on synthetic test terrain. They show the output format, not results for a real place.</sub>
+
+## Quick start
+
+```bash
+conda env create -f environment.yml
+conda activate wtd-<model>
+python clip_wtd.py --file <published_wtd.tif>      # or run the model, see the kit README
+python plot_wtd.py outputs/wtd_<model>.tif
+python compare_wtd.py outputs/wtd_A.tif outputs/wtd_B.tif --labels "Model A" "Model B"
+```
+
+## Repository layout
+
+```
+index.html, css/, js/       the website (static, GitHub Pages)
+js/models.js                model catalog: metadata, links, citations
+js/kits.js                  builds each kit (README, config, environment)
+kit/shared/                 clip, plot, compare, DEM scripts used by every kit
+kit/parflow/ kit/modflow/ kit/fan/   model-specific scripts
+assets/                     figures
+```
+
+**Add a model:** add an entry to `js/models.js` and a guide to `GUIDE` in `js/kits.js`. Put any new scripts in `kit/<model>/`.
+
+**Run the site locally:** `python -m http.server` in this folder, then open http://localhost:8000.
+
+## Testing status
+
+- ✅ Website, all 11 kit downloads, Python syntax of every script (headless browser test)
+- ✅ MODFLOW 6 kit end to end, plus `clip_wtd.py` on projected (NZTM) GeoTIFFs and CLM-style NetCDF, `plot_wtd.py` and `compare_wtd.py`
+- ⚠️ ParFlow kit follows the HydroFrame subsettools 2.x workflow. It hasn't been run here because it needs a HydroFrame account and a ParFlow install.
+- ⚠️ For models without published gridded WTD, the kit gives setup steps and extraction scripts. Running them needs the model's own build and inputs.
+
+## Citation
+
+If WTD Run Kit helps your work, please cite the **original model papers** listed in each kit, and link to this repository.
 
 ## License
-MIT. See `LICENSE`.
+
+MIT for the code in this repository. Data and models belong to their authors under their own licences (e.g. NZ National Water Table © GNS Science 2019, CC BY 4.0).
