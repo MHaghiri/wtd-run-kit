@@ -1,6 +1,13 @@
 /* WTD Run Kit — website logic: catalog, chart, table, map builder, zip download. */
 (function () {
   "use strict";
+  if (!window.WTDModels || !window.WTDKits || !window.L || !window.JSZip) {
+    const box = document.createElement("div");
+    box.className = "js-error";
+    box.textContent = "Part of the site did not load. Please refresh with Ctrl+F5 (Cmd+Shift+R on Mac). If it persists, check that unpkg.com and cdn.jsdelivr.net are not blocked.";
+    document.querySelector("main").prepend(box);
+    return;
+  }
   const { MODELS, COVERAGE } = window.WTDModels;
   const $ = (id) => document.getElementById(id);
   const byId = Object.fromEntries(MODELS.map((m) => [m.id, m]));
@@ -153,11 +160,17 @@
   // ================================================================ builder
   const sel = $("model-select");
   sel.innerHTML = MODELS.map((m) => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
+  $("model-picker").innerHTML = MODELS.map((m) => `<button type="button" class="pick" role="radio" data-id="${m.id}">
+      <span class="dot" style="background:${m.color}"></span><span>${esc(m.short)}<small>${esc(m.scale)} · ${esc(m.resolution.split(",")[0])}</small></span></button>`).join("");
+  $("model-picker").querySelectorAll(".pick").forEach((b) => b.addEventListener("click", () => selectModel(b.dataset.id)));
   sel.addEventListener("change", () => selectModel(sel.value));
   document.querySelectorAll(".opts input, .opts select, #runname").forEach((i) => i.addEventListener("input", update));
 
   function selectModel(id) {
     current = byId[id]; sel.value = id;
+    $("model-picker").querySelectorAll(".pick").forEach((b) => {
+      const on = b.dataset.id === id; b.classList.toggle("active", on); b.setAttribute("aria-checked", on);
+    });
     document.querySelectorAll(".opts").forEach((o) => { o.hidden = o.dataset.for !== current.options; });
     const s = $("model-summary");
     s.style.setProperty("--c", current.color);
